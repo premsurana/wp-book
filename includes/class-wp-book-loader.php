@@ -50,7 +50,13 @@ class Wp_Book_Loader {
 
 		$this->actions = array();
 		$this->filters = array();
+		$this->add_action( 'init', $this, 'bookmeta_integrate_wpdb', 0 );
+		$this->add_action( 'switch_blog', $this, 'bookmeta_integrate_wpdb', 0 );
 		$this->add_action( 'init', $this, 'wp_book_book_post_type' );
+		$this->add_action( 'init', $this, 'wp_book_book_category_taxonomy' );
+		$this->add_action( 'init', $this, 'wp_book_book_tag_taxonomy' );
+		$this->add_action( 'add_meta_boxes', $this, 'wp_book_book_meta_box' );
+		$this->add_action( 'save_post_book', $this, 'wp_book_save_book' );
 	}
 
 	/**
@@ -102,7 +108,7 @@ class Wp_Book_Loader {
 			'component'     => $component,
 			'callback'      => $callback,
 			'priority'      => $priority,
-			'accepted_args' => $accepted_args
+			'accepted_args' => $accepted_args,
 		);
 
 		return $hooks;
@@ -124,6 +130,21 @@ class Wp_Book_Loader {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
 
+	}
+
+	/**
+	 * Integrate BookMeta with wpdb
+	 *
+	 * @since    1.0.0
+	 */
+	public function bookmeta_integrate_wpdb() {
+
+		global $wpdb;
+
+		$wpdb->bookmeta = $wpdb->prefix . 'bookmeta';
+		$wpdb->tables[] = 'bookmeta';
+
+		return;
 	}
 
 	/**
@@ -157,4 +178,115 @@ class Wp_Book_Loader {
 		register_post_type( 'book', $args );
 	}
 
+	/**
+	 * Register Book Category Taxonomy with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_category_taxonomy() {
+		$labels = array(
+			'name'          => 'Book Categories',
+			'singular_name' => 'Book Category',
+		);
+
+		$args = array(
+			'labels'       => $labels,
+			'hierarchical' => true,
+		);
+
+		register_taxonomy( 'Book Category', array( 'book' ), $args );
+	}
+
+	/**
+	 * Register Book Tag Taxonomy with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_tag_taxonomy() {
+		$labels = array(
+			'name'          => 'Book Tags',
+			'singular_name' => 'Book Tag',
+		);
+
+		$args = array(
+			'labels'       => $labels,
+			'hierarchical' => false,
+		);
+
+		register_taxonomy( 'Book Tag', array( 'book' ), $args );
+	}
+
+	/**
+	 * Register Custom Book Meta Box.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_meta_box() {
+		add_meta_box( 'book_meta_box', 'Book Meta', array( $this, 'book_meta_box_content' ), 'book', 'side', 'high' );
+	}
+
+	/**
+	 * Render Custom Book Meta Box.
+	 *
+	 * @since    1.0.0
+	 */
+	public function book_meta_box_content() {
+		global $post;
+		$flag  = false;
+		$array = get_book_meta( $post->ID, $post->ID, true );
+
+		if ( isset( $array['Price'] ) ) {
+			$flag = true;
+		}
+
+		if ( $flag === true ) {	
+			?>
+
+			<div>
+				Author Name: <input type="text" name="AuthorName" value="<?php echo $array['AuthorName']; ?>"><br><br>
+				Price: <input type="number" name="Price" value="<?php echo $array['Price']; ?>"><br><br>
+				Publisher: <input type="text" name="Publisher" value="<?php echo $array['Publisher']; ?>"><br><br>
+				Year: <input type="text" name="Year" value="<?php echo $array['Year']; ?>"><br><br>
+				Edition: <input type="text" name="Edition" value="<?php echo $array['Edition']; ?>"><br><br>
+				URL: <input type="text" name="URL" value="<?php echo $array['URL']; ?>"><br><br>
+			</div>
+			<?php
+
+		}
+		else {
+			?>
+
+			<div>
+				Author Name: <input type="text" name="AuthorName" value=""><br><br>
+				Price: <input type="number" name="Price" value="0"><br><br>
+				Publisher: <input type="text" name="Publisher" value=""><br><br>
+				Year: <input type="text" name="Year" value=""><br><br>
+				Edition: <input type="text" name="Edition" value=""><br><br>
+				URL: <input type="text" name="URL" value=""><br><br>
+			</div>
+			<?php
+		}
+	}
+
+	/**
+	 * Save Custom Book Meta.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_save_book( $post_id ) {
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $post_id;
+		}
+
+		$array = array(
+			'AuthorName' => $_POST['AuthorName'],
+			'Price'      => $_POST['Price'],
+			'Publisher'  => $_POST['Publisher'],
+			'Year'       => $_POST['Year'],
+			'Edition'    => $_POST['Edition'],
+			'URL'        => $_POST['URL'],
+		);
+
+		update_book_meta( $post_id, $post_id, $array );
+	}
 }

@@ -58,6 +58,7 @@ class Wp_Book_Loader {
 		$this->add_action( 'add_meta_boxes', $this, 'wp_book_book_meta_box' );
 		$this->add_action( 'save_post_book', $this, 'wp_book_save_book' );
 		$this->add_action( 'before_delete_post', $this, 'wp_book_delete_post' );
+		add_shortcode( 'book', array( $this, 'wp_book_shortcode' ) );
 	}
 
 	/**
@@ -94,13 +95,13 @@ class Wp_Book_Loader {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @param    array                $hooks            The collection of hooks that is being registered (that is, actions or filters).
-	 * @param    string               $hook             The name of the WordPress filter that is being registered.
-	 * @param    object               $component        A reference to the instance of the object on which the filter is defined.
-	 * @param    string               $callback         The name of the function definition on the $component.
-	 * @param    int                  $priority         The priority at which the function should be fired.
-	 * @param    int                  $accepted_args    The number of arguments that should be passed to the $callback.
-	 * @return   array                                  The collection of actions and filters registered with WordPress.
+	 * @param    array  $hooks            The collection of hooks that is being registered (that is, actions or filters).
+	 * @param    string $hook             The name of the WordPress filter that is being registered.
+	 * @param    object $component        A reference to the instance of the object on which the filter is defined.
+	 * @param    string $callback         The name of the function definition on the $component.
+	 * @param    int    $priority         The priority at which the function should be fired.
+	 * @param    int    $accepted_args    The number of arguments that should be passed to the $callback.
+	 * @return   array  The collection of actions and filters registered with WordPress.
 	 */
 	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
 
@@ -173,7 +174,7 @@ class Wp_Book_Loader {
 			'description'   => 'Holds our books and book specific data',
 			'public'        => true,
 			'menu_position' => 5,
-			'supports'      => array( 'title', 'editor', 'excerpt'),
+			'supports'      => array( 'title', 'editor' ),
 			'has_archive'   => true,
 		);
 		register_post_type( 'book', $args );
@@ -303,5 +304,67 @@ class Wp_Book_Loader {
 			return;
 		}
 		delete_book_meta( $post->ID, $post->ID );
+	}
+
+	/**
+	 * Book ShortCode Function
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_shortcode( $atts ) {
+		$atts = shortcode_atts( array(
+			'id'         => '0',
+			'authorname' => '',
+			'category'   => '',
+			'publisher'  => '',
+			'year'       => '',
+			'tag'        => '',
+		), $atts );
+
+		if ( $atts['id'] === '0' ) {
+			return 'No Book Found';
+		}
+
+		$array      = get_book_meta( $atts['id'], $atts['id'], true );
+		$atts['id'] = (int) $atts['id'];
+
+		if ( ( $atts['authorname'] !== $array['AuthorName'] ) && $atts['authorname'] !== '' ) {
+			echo $atts['author_name'] . " " . $array['AuthorName'];
+			return 'No Book Found';
+		}
+		else if ( $atts['year'] !== $array['Year'] && $atts['year'] !== '' ) {
+			return 'No Book Found';
+		}
+		else if( $atts['publisher'] !== $array['Publisher'] && $atts['publisher'] !== '' ) {
+			return 'No Book Found';
+		}
+
+		echo '<pre>';
+			$total_result = wp_json_encode( $array );
+			$result = array();
+			$items = get_the_terms( $atts['id'], 'Book Category' );
+			foreach ( $items as $tag )
+			{	
+				echo '<br>';
+				if( $atts['category'] !== $tag->name && $atts['category'] !== '') {
+					return 'No Book Found';
+				}
+				array_push( $result, $tag->name );
+			}
+			echo '<br>';
+
+			$items = get_the_terms( $atts['id'],'Book Tag' );
+			foreach ( $items as $tag ) {
+				echo '<br>';
+				if( $atts['tag'] !== $tag->name && $atts['tag'] !== '') {
+					return "No Book Found";
+				}
+				array_push( $result, $tag->name );
+			}
+			print_r($array);
+			foreach ( $result as $item ) {
+				echo $item . '<br>';
+			}
+		echo '</pre>';
 	}
 }

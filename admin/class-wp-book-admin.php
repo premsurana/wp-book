@@ -51,7 +51,8 @@ class Wp_Book_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+		add_action( 'admin_menu', array( $this, 'wp_book_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'wp_book_settings_init') );
 	}
 
 	/**
@@ -98,6 +99,81 @@ class Wp_Book_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wp-book-admin.js', array( 'jquery' ), $this->version, false );
 
+	}
+
+	/**
+	 * Add Book Settings menu
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_admin_menu() {
+		add_options_page( 'Book Settings', 'Book Settings', 'manage_options', 'book-settings', array( $this, 'wp_book_settings_render' ) );
+	}
+
+	/**
+	 * Render Settings menu
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_settings_render() {
+		?>
+			<form action="options.php" method="post">
+				<h1>Book Settings Page</h1>
+				<?php
+				settings_fields( 'bookSettings' );
+				do_settings_sections( 'bookSettings' );
+				submit_button();
+				?>
+			</form>
+		<?php
+	}
+
+	/**
+	 * Initialize settings
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_settings_init() {
+		register_setting( 'bookSettings', 'book_settings' );
+		add_settings_section( 'book_settings_section', 'Book Settings Section', array( $this, 'book_settings_section_render' ), 'bookSettings' );
+		add_settings_field( 'book_settings_field_zero', 'Changing currency', array( $this, 'book_settings_field_zero_render' ), 'bookSettings', 'book_settings_section' );
+		add_settings_field( 'book_settings_field_one', 'Number of books displayed per page', array( $this, 'book_settings_field_one_render' ), 'bookSettings', 'book_settings_section' );
+	}
+
+	/**
+	 * Render Book Settings Section
+	 *
+	 * @since    1.0.0
+	 */
+	public function book_settings_section_render() {
+		echo '<p>Description of settings</p>';
+	}
+
+	/**
+	 * Render Book Settings field 0
+	 *
+	 * @since    1.0.0
+	 */
+	public function book_settings_field_zero_render() {
+		$options = get_option( 'book_settings' );
+		?>
+		<input type="text" name='book_settings[book_settings_field_zero]' value="<?php echo $options['book_settings_field_zero']; ?>">
+		<?php
+	}
+
+	/**
+	 * Render Book Settings field 1
+	 *
+	 * @since    1.0.0
+	 */
+	public function book_settings_field_one_render() {
+		$options = get_option( 'book_settings' );
+		?>
+		<select name="book_settings[book_settings_field_one]">
+			<option value='1' <?php selected( $options['book_settings_field_one'], 1 ); ?>>$</option>
+			<option value='2' <?php selected( $options['book_settings_field_one'], 2 ); ?>>Rs.</option>
+		</select>
+		<?php
 	}
 
 }

@@ -57,6 +57,7 @@ class Wp_Book_Loader {
 		$this->add_action( 'init', $this, 'wp_book_book_tag_taxonomy' );
 		$this->add_action( 'add_meta_boxes', $this, 'wp_book_book_meta_box' );
 		$this->add_action( 'save_post_book', $this, 'wp_book_save_book' );
+		$this->add_action( 'before_delete_post', $this, 'wp_book_delete_post' );
 	}
 
 	/**
@@ -288,5 +289,19 @@ class Wp_Book_Loader {
 		);
 
 		update_book_meta( $post_id, $post_id, $array );
+	}
+
+	/**
+	 * Delete Book
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_delete_post() {
+		global $post_type, $post;
+
+		if ( 'book' !== $post_type ) {
+			return;
+		}
+		delete_book_meta( $post->ID, $post->ID );
 	}
 }

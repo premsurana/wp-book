@@ -50,7 +50,7 @@ class Wp_Book_Loader {
 
 		$this->actions = array();
 		$this->filters = array();
-
+		$this->add_action( 'init', $this, 'wp_book_book_post_type' );
 	}
 
 	/**
@@ -124,6 +124,37 @@ class Wp_Book_Loader {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
 
+	}
+
+	/**
+	 * Register book post type with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_post_type() {
+		$labels = array(
+			'name'               => _x( 'Books', 'post type general name' ),
+			'singular_name'      => _x( 'Book', 'post type singular name' ),
+			'add_new'            => _x( 'Add New', 'book' ),
+			'add_new_item'       => __( 'Add New Book' ),
+			'edit_item'          => __( 'Edit Book' ),
+			'new_item'           => __( 'New Book' ),
+			'all_items'          => __( 'All Book' ),
+			'view_item'          => __( 'View Book' ),
+			'search_items'       => __( 'Search Book' ),
+			'not_found'          => __( 'No books found' ),
+			'not_found_in_trash' => __( 'No books found in the Trash' ), 
+			'menu_name'          => 'Books'
+		);
+		$args = array(
+			'labels'        => $labels,
+			'description'   => 'Holds our books and book specific data',
+			'public'        => true,
+			'menu_position' => 5,
+			'supports'      => array( 'title', 'editor', 'excerpt'),
+			'has_archive'   => true,
+		);
+		register_post_type( 'book', $args );
 	}
 
 }

@@ -51,6 +51,8 @@ class Wp_Book_Loader {
 		$this->actions = array();
 		$this->filters = array();
 		$this->add_action( 'init', $this, 'wp_book_book_post_type' );
+		$this->add_action( 'init', $this, 'wp_book_book_category_taxonomy' );
+		$this->add_action( 'init', $this, 'wp_book_book_tag_taxonomy' );
 	}
 
 	/**
@@ -102,7 +104,7 @@ class Wp_Book_Loader {
 			'component'     => $component,
 			'callback'      => $callback,
 			'priority'      => $priority,
-			'accepted_args' => $accepted_args
+			'accepted_args' => $accepted_args,
 		);
 
 		return $hooks;
@@ -157,4 +159,41 @@ class Wp_Book_Loader {
 		register_post_type( 'book', $args );
 	}
 
+	/**
+	 * Register Book Category Taxonomy with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_category_taxonomy() {
+		$labels = array(
+			'name'          => 'Book Categories',
+			'singular_name' => 'Book Category',
+		);
+
+		$args = array(
+			'labels'       => $labels,
+			'hierarchical' => true,
+		);
+
+		register_taxonomy( 'Book Category', array( 'book' ), $args );
+	}
+
+	/**
+	 * Register Book Tag Taxonomy with WordPress.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_book_tag_taxonomy() {
+		$labels = array(
+			'name'          => 'Book Tags',
+			'singular_name' => 'Book Tag',
+		);
+
+		$args = array(
+			'labels'       => $labels,
+			'hierarchical' => false,
+		);
+
+		register_taxonomy( 'Book Tag', array( 'book' ), $args );
+	}
 }

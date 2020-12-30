@@ -47,7 +47,7 @@ class Wp_Book_Activator {
 		) $charset_collate;";
 
 		dbDelta( $install_query );
-		
+
 		flush_rewrite_rules();
 	}
 

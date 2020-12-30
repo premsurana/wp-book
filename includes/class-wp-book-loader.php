@@ -59,6 +59,8 @@ class Wp_Book_Loader {
 		$this->add_action( 'save_post_book', $this, 'wp_book_save_book' );
 		$this->add_action( 'before_delete_post', $this, 'wp_book_delete_post' );
 		add_shortcode( 'book', array( $this, 'wp_book_shortcode' ) );
+		$this->add_action( 'wp_dashboard_setup', $this, 'wp_book_dashboard_widgets' );
+		$this->add_action( 'widgets_init', $this, 'wp_book_widget' );
 	}
 
 	/**
@@ -332,15 +334,15 @@ class Wp_Book_Loader {
 			echo $atts['author_name'] . " " . $array['AuthorName'];
 			return 'No Book Found';
 		}
-		else if ( $atts['year'] !== $array['Year'] && $atts['year'] !== '' ) {
+		elseif ( $atts['year'] !== $array['Year'] && $atts['year'] !== '' ) {
 			return 'No Book Found';
 		}
-		else if( $atts['publisher'] !== $array['Publisher'] && $atts['publisher'] !== '' ) {
+		elseif ( $atts['publisher'] !== $array['Publisher'] && $atts['publisher'] !== '' ) {
 			return 'No Book Found';
 		}
 
 		echo '<pre>';
-			$total_result = wp_json_encode( $array );
+
 			$result = array();
 			$items = get_the_terms( $atts['id'], 'Book Category' );
 			foreach ( $items as $tag )
@@ -366,5 +368,51 @@ class Wp_Book_Loader {
 				echo $item . '<br>';
 			}
 		echo '</pre>';
+	}
+
+	/**
+	 * Book Dashboard Widget Render Function
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_dashboard_widgets() {
+		wp_add_dashboard_widget( 'book_dashboard_widget', 'Top 5 Book Categories as per count', array( $this, 'wp_book_dashboard_widgets_render' ) );
+	}
+
+	/**
+	 * Book Dashboard Widget Render Function
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_dashboard_widgets_render() {
+		$array = get_terms();
+		$total = array();
+		$count = 0;
+		foreach ( $array as $item ) {
+			if ( $item->taxonomy === 'Book Category' ) {
+				$total[ $item->name ] = $item->count; 
+			}
+		}
+		arsort( $total );
+
+		$count = 0;
+		foreach ( $total as $param_name => $param_value ) {
+			echo '<h4>' . esc_html( $param_name ) . ' ' . esc_html( $param_value ) . '</h4>';
+			if ( $count > 4 ) {
+				break;
+			}
+			$count++;
+		}
+	}
+
+	/**
+	 * Calling widget hook and class
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_widget() {
+		include_once plugin_dir_path( __FILE__ ) . 'class-wp-widget.php';
+		$widget = new Book_Widget();
+		register_widget( $widget );
 	}
 }

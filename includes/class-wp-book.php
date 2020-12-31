@@ -155,7 +155,19 @@ class Wp_Book {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'init', $plugin_admin, 'wp_book_book_post_type' );
+		$this->loader->add_action( 'init', $plugin_admin, 'bookmeta_integrate_wpdb', 0 );
+		$this->loader->add_action( 'switch_blog', $plugin_admin, 'bookmeta_integrate_wpdb', 0 );
+		$this->loader->add_action( 'init', $plugin_admin, 'wp_book_book_category_taxonomy' );
+		$this->loader->add_action( 'init', $plugin_admin, 'wp_book_book_tag_taxonomy' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'wp_book_book_meta_box' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'wp_book_save_book' );
+		$this->loader->add_action( 'before_delete_post', $plugin_admin, 'wp_book_delete_post' );
+		add_shortcode( 'book', array( $plugin_admin, 'wp_book_shortcode' ) );
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'wp_book_dashboard_widgets' );
+		$this->loader->add_action( 'widgets_init', $plugin_admin, 'wp_book_widget' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wp_book_admin_menu' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'wp_book_settings_init' );
 	}
 
 	/**

@@ -29,7 +29,7 @@ class Book_Widget extends WP_Widget {
 	public function __construct() {
 		$widget_options = array(
 			'classname'                   => 'book_widget',
-			'description'                 => esc_html('Book Widget','text_domain'),
+			'description'                 => __( 'Book Widget' ),
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( 'book_widget', 'Book Widget', $widget_options );
@@ -39,6 +39,8 @@ class Book_Widget extends WP_Widget {
 	 * Widget rendering on client side function
 	 *
 	 * @since    1.0.0
+	 * @param    mixed $args     Arguments.
+	 * @param    mixed $instance Instance Object.
 	 */
 	public function widget( $args, $instance ) {
 		?>
@@ -48,7 +50,18 @@ class Book_Widget extends WP_Widget {
 			return;
 		}
 
-		$the_query = new WP_Query( array('post_type' => 'book', 'tax_query' => array( array( 'taxonomy' => 'Book Category', 'field' => 'slug', 'terms' => $instance['title'] ) ) ) );
+		$the_query = new WP_Query(
+			array(
+				'post_type' => 'book',
+				'tax_query' => array(
+					array(
+						'taxonomy' => 'Book Category',
+						'field'    => 'slug',
+						'terms'    => $instance['title'],
+					),
+				),
+			)
+		);
 		$flag      = false;
 		while ( $the_query->have_posts() ) {
 			$flag = true;
@@ -58,28 +71,29 @@ class Book_Widget extends WP_Widget {
 		}
 
 		if ( false === $flag ) {
-			return 'no book found';
+			echo 'no book found';
 		}
 	}
 
 	/**
-	 * Widget rendering on client side function
+	 * Widget rendering on admin side function
 	 *
 	 * @since    1.0.0
+	 * @param    mixed $instance New Instance Object.
 	 */
 	public function form( $instance ) {
-		$array = get_terms();
 
 		echo '<br>';
-		$values = array();
 		echo "<input type='text' name='" . esc_html( $this->get_field_name( 'title' ) ) . "' id='" . esc_html( $this->get_field_name( 'id' ) ) . "'>";
-
+		echo '<br>';
 	}
 
 	/**
-	 * Widget updating on client side 
-	 * 
+	 * Widget updating on client side
+	 *
 	 * @since    1.0.0
+	 * @param    mixed $new_instance New Instance Object.
+	 * @param    mixed $old_instance Old Instance Object.
 	 */
 	public function update( $new_instance, $old_instance ) {
 

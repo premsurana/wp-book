@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Register all actions and filters for the plugin
  *
@@ -50,28 +49,17 @@ class Wp_Book_Loader {
 
 		$this->actions = array();
 		$this->filters = array();
-		$this->add_action( 'init', $this, 'bookmeta_integrate_wpdb', 0 );
-		$this->add_action( 'switch_blog', $this, 'bookmeta_integrate_wpdb', 0 );
-		$this->add_action( 'init', $this, 'wp_book_book_post_type' );
-		$this->add_action( 'init', $this, 'wp_book_book_category_taxonomy' );
-		$this->add_action( 'init', $this, 'wp_book_book_tag_taxonomy' );
-		$this->add_action( 'add_meta_boxes', $this, 'wp_book_book_meta_box' );
-		$this->add_action( 'save_post_book', $this, 'wp_book_save_book' );
-		$this->add_action( 'before_delete_post', $this, 'wp_book_delete_post' );
-		add_shortcode( 'book', array( $this, 'wp_book_shortcode' ) );
-		$this->add_action( 'wp_dashboard_setup', $this, 'wp_book_dashboard_widgets' );
-		$this->add_action( 'widgets_init', $this, 'wp_book_widget' );
 	}
 
 	/**
 	 * Add a new action to the collection to be registered with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @param    string               $hook             The name of the WordPress action that is being registered.
-	 * @param    object               $component        A reference to the instance of the object on which the action is defined.
-	 * @param    string               $callback         The name of the function definition on the $component.
-	 * @param    int                  $priority         Optional. The priority at which the function should be fired. Default is 10.
-	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param    string $hook             The name of the WordPress action that is being registered.
+	 * @param    object $component        A reference to the instance of the object on which the action is defined.
+	 * @param    string $callback         The name of the function definition on the $component.
+	 * @param    int    $priority         Optional. The priority at which the function should be fired. Default is 10.
+	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->actions = $this->add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
@@ -81,11 +69,11 @@ class Wp_Book_Loader {
 	 * Add a new filter to the collection to be registered with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @param    string               $hook             The name of the WordPress filter that is being registered.
-	 * @param    object               $component        A reference to the instance of the object on which the filter is defined.
-	 * @param    string               $callback         The name of the function definition on the $component.
-	 * @param    int                  $priority         Optional. The priority at which the function should be fired. Default is 10.
-	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
+	 * @param    string $hook             The name of the WordPress filter that is being registered.
+	 * @param    object $component        A reference to the instance of the object on which the filter is defined.
+	 * @param    string $callback         The name of the function definition on the $component.
+	 * @param    int    $priority         Optional. The priority at which the function should be fired. Default is 10.
+	 * @param    int    $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
 	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
 		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
@@ -134,285 +122,5 @@ class Wp_Book_Loader {
 			add_action( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );
 		}
 
-	}
-
-	/**
-	 * Integrate BookMeta with wpdb
-	 *
-	 * @since    1.0.0
-	 */
-	public function bookmeta_integrate_wpdb() {
-
-		global $wpdb;
-
-		$wpdb->bookmeta = $wpdb->prefix . 'bookmeta';
-		$wpdb->tables[] = 'bookmeta';
-
-		return;
-	}
-
-	/**
-	 * Register book post type with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_book_post_type() {
-		$labels = array(
-			'name'               => _x( 'Books', 'post type general name' ),
-			'singular_name'      => _x( 'Book', 'post type singular name' ),
-			'add_new'            => _x( 'Add New', 'book' ),
-			'add_new_item'       => __( 'Add New Book' ),
-			'edit_item'          => __( 'Edit Book' ),
-			'new_item'           => __( 'New Book' ),
-			'all_items'          => __( 'All Book' ),
-			'view_item'          => __( 'View Book' ),
-			'search_items'       => __( 'Search Book' ),
-			'not_found'          => __( 'No books found' ),
-			'not_found_in_trash' => __( 'No books found in the Trash' ), 
-			'menu_name'          => 'Books'
-		);
-		$args = array(
-			'labels'        => $labels,
-			'description'   => 'Holds our books and book specific data',
-			'public'        => true,
-			'menu_position' => 5,
-			'supports'      => array( 'title', 'editor' ),
-			'has_archive'   => true,
-		);
-		register_post_type( 'book', $args );
-	}
-
-	/**
-	 * Register Book Category Taxonomy with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_book_category_taxonomy() {
-		$labels = array(
-			'name'          => 'Book Categories',
-			'singular_name' => 'Book Category',
-		);
-
-		$args = array(
-			'labels'       => $labels,
-			'hierarchical' => true,
-		);
-
-		register_taxonomy( 'Book Category', array( 'book' ), $args );
-	}
-
-	/**
-	 * Register Book Tag Taxonomy with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_book_tag_taxonomy() {
-		$labels = array(
-			'name'          => 'Book Tags',
-			'singular_name' => 'Book Tag',
-		);
-
-		$args = array(
-			'labels'       => $labels,
-			'hierarchical' => false,
-		);
-
-		register_taxonomy( 'Book Tag', array( 'book' ), $args );
-	}
-
-	/**
-	 * Register Custom Book Meta Box.
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_book_meta_box() {
-		add_meta_box( 'book_meta_box', 'Book Meta', array( $this, 'book_meta_box_content' ), 'book', 'side', 'high' );
-	}
-
-	/**
-	 * Render Custom Book Meta Box.
-	 *
-	 * @since    1.0.0
-	 */
-	public function book_meta_box_content() {
-		global $post;
-		$flag  = false;
-		$array = get_book_meta( $post->ID, $post->ID, true );
-
-		if ( isset( $array['Price'] ) ) {
-			$flag = true;
-		}
-
-		if ( $flag === true ) {	
-			?>
-
-			<div>
-				Author Name: <input type="text" name="AuthorName" value="<?php echo $array['AuthorName']; ?>"><br><br>
-				Price: <input type="number" name="Price" value="<?php echo $array['Price']; ?>"><br><br>
-				Publisher: <input type="text" name="Publisher" value="<?php echo $array['Publisher']; ?>"><br><br>
-				Year: <input type="text" name="Year" value="<?php echo $array['Year']; ?>"><br><br>
-				Edition: <input type="text" name="Edition" value="<?php echo $array['Edition']; ?>"><br><br>
-				URL: <input type="text" name="URL" value="<?php echo $array['URL']; ?>"><br><br>
-			</div>
-			<?php
-
-		}
-		else {
-			?>
-
-			<div>
-				Author Name: <input type="text" name="AuthorName" value=""><br><br>
-				Price: <input type="number" name="Price" value="0"><br><br>
-				Publisher: <input type="text" name="Publisher" value=""><br><br>
-				Year: <input type="text" name="Year" value=""><br><br>
-				Edition: <input type="text" name="Edition" value=""><br><br>
-				URL: <input type="text" name="URL" value=""><br><br>
-			</div>
-			<?php
-		}
-	}
-
-	/**
-	 * Save Custom Book Meta.
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_save_book( $post_id ) {
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return $post_id;
-		}
-
-		$array = array(
-			'AuthorName' => $_POST['AuthorName'],
-			'Price'      => $_POST['Price'],
-			'Publisher'  => $_POST['Publisher'],
-			'Year'       => $_POST['Year'],
-			'Edition'    => $_POST['Edition'],
-			'URL'        => $_POST['URL'],
-		);
-
-		update_book_meta( $post_id, $post_id, $array );
-	}
-
-	/**
-	 * Delete Book
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_delete_post() {
-		global $post_type, $post;
-
-		if ( 'book' !== $post_type ) {
-			return;
-		}
-		delete_book_meta( $post->ID, $post->ID );
-	}
-
-	/**
-	 * Book ShortCode Function
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_shortcode( $atts ) {
-		$atts = shortcode_atts( array(
-			'id'         => '0',
-			'authorname' => '',
-			'category'   => '',
-			'publisher'  => '',
-			'year'       => '',
-			'tag'        => '',
-		), $atts );
-
-		if ( $atts['id'] === '0' ) {
-			return 'No Book Found';
-		}
-
-		$array      = get_book_meta( $atts['id'], $atts['id'], true );
-		$atts['id'] = (int) $atts['id'];
-
-		if ( ( $atts['authorname'] !== $array['AuthorName'] ) && $atts['authorname'] !== '' ) {
-			echo $atts['author_name'] . " " . $array['AuthorName'];
-			return 'No Book Found';
-		}
-		elseif ( $atts['year'] !== $array['Year'] && $atts['year'] !== '' ) {
-			return 'No Book Found';
-		}
-		elseif ( $atts['publisher'] !== $array['Publisher'] && $atts['publisher'] !== '' ) {
-			return 'No Book Found';
-		}
-
-		echo '<pre>';
-
-			$result = array();
-			$items = get_the_terms( $atts['id'], 'Book Category' );
-			foreach ( $items as $tag )
-			{	
-				echo '<br>';
-				if( $atts['category'] !== $tag->name && $atts['category'] !== '') {
-					return 'No Book Found';
-				}
-				array_push( $result, $tag->name );
-			}
-			echo '<br>';
-
-			$items = get_the_terms( $atts['id'],'Book Tag' );
-			foreach ( $items as $tag ) {
-				echo '<br>';
-				if( $atts['tag'] !== $tag->name && $atts['tag'] !== '') {
-					return "No Book Found";
-				}
-				array_push( $result, $tag->name );
-			}
-			print_r($array);
-			foreach ( $result as $item ) {
-				echo $item . '<br>';
-			}
-		echo '</pre>';
-	}
-
-	/**
-	 * Book Dashboard Widget Render Function
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_dashboard_widgets() {
-		wp_add_dashboard_widget( 'book_dashboard_widget', 'Top 5 Book Categories as per count', array( $this, 'wp_book_dashboard_widgets_render' ) );
-	}
-
-	/**
-	 * Book Dashboard Widget Render Function
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_dashboard_widgets_render() {
-		$array = get_terms();
-		$total = array();
-		$count = 0;
-		foreach ( $array as $item ) {
-			if ( $item->taxonomy === 'Book Category' ) {
-				$total[ $item->name ] = $item->count; 
-			}
-		}
-		arsort( $total );
-
-		$count = 0;
-		foreach ( $total as $param_name => $param_value ) {
-			echo '<h4>' . esc_html( $param_name ) . ' ' . esc_html( $param_value ) . '</h4>';
-			if ( $count > 4 ) {
-				break;
-			}
-			$count++;
-		}
-	}
-
-	/**
-	 * Calling widget hook and class
-	 *
-	 * @since    1.0.0
-	 */
-	public function wp_book_widget() {
-		include_once plugin_dir_path( __FILE__ ) . 'class-wp-widget.php';
-		$widget = new Book_Widget();
-		register_widget( $widget );
 	}
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin activation
  *
@@ -30,7 +29,7 @@ class Wp_Book_Activator {
 	 * @since    1.0.0
 	 */
 	public static function activate() {
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		global $wpdb;
 		$table_name       = $wpdb->prefix . 'bookmeta';
 		$charset_collate  = $wpdb->get_charset_collate();
@@ -50,13 +49,4 @@ class Wp_Book_Activator {
 
 		flush_rewrite_rules();
 	}
-
-	/**
-	 * Integrate bookmeta table with wpdb
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	
 }

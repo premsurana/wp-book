@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The public-facing functionality of the plugin.
  *
@@ -100,20 +99,4 @@ class Wp_Book_Public {
 
 	}
 
-}
-
-function add_book_meta( $book_id, $meta_key, $meta_value, $unique = false ) {
-	return add_metadata( 'book', $book_id, $meta_key, $meta_value, $unique );
-}
-
-function delete_book_meta( $book_id, $meta_key, $meta_value = '' ) {
-	return delete_metadata( 'book', $book_id, $meta_key, $meta_value );
-}
-
-function get_book_meta( $book_id, $key = '', $single = false ) {
-	return get_metadata( 'book', $book_id, $key, $single );
-}
-
-function update_book_meta( $book_id, $meta_key, $meta_value, $prev_value = '' ) {
-	return update_metadata( 'book', $book_id, $meta_key, $meta_value, $prev_value );
 }

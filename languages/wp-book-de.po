@@ -2,149 +2,126 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: BUG-EMAIL-ADDR <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: yyyy-mm-dd hh:mm+0000\n"
-"PO-Revision-Date: 2021-01-04 11:55+0500\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2021-01-04 10:51+0530\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Eazy Po 0.9.5.3\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Language: de\n"
 
 #: admin/class-wp-book-admin.php:108
+msgctxt "post type general name"
 msgid "Books"
-msgstr ""
+msgstr "Buchungen"
 
 #: admin/class-wp-book-admin.php:109
+msgctxt "post type singular name"
 msgid "Book"
-msgstr ""
+msgstr "Buch"
 
 #: admin/class-wp-book-admin.php:110
+msgctxt "book"
 msgid "Add New"
-msgstr ""
+msgstr "Neu hinzufügen"
 
 #: admin/class-wp-book-admin.php:111
 msgid "Add New Book"
-msgstr ""
+msgstr "Neues Buch hinzufügen"
 
 #: admin/class-wp-book-admin.php:112
 msgid "Edit Book"
-msgstr ""
+msgstr "Buch bearbeiten"
 
 #: admin/class-wp-book-admin.php:113
 msgid "New Book"
-msgstr ""
+msgstr "Neuen Film"
 
 #: admin/class-wp-book-admin.php:114
 msgid "All Book"
-msgstr ""
+msgstr "Alle Bücher"
 
 #: admin/class-wp-book-admin.php:115
 msgid "View Book"
-msgstr ""
+msgstr "Buch ansehen"
 
 #: admin/class-wp-book-admin.php:116
 msgid "Search Book"
-msgstr ""
+msgstr "Suchbuch"
 
 #: admin/class-wp-book-admin.php:117
 msgid "No books found"
-msgstr ""
+msgstr "Keine Bücher gefunden"
 
 #: admin/class-wp-book-admin.php:118
 msgid "No books found in the Trash"
-msgstr ""
+msgstr "Keine Bücher im Papierkorb gefunden"
 
 #: admin/class-wp-book-admin.php:123
 msgid "Holds our books and book specific data"
-msgstr ""
+msgstr "Hält unsere Bücher und buchspezifischen Daten"
 
 #: admin/class-wp-book-admin.php:152
 msgid "Book Categories"
-msgstr ""
+msgstr "Buchkategorien"
 
 #: admin/class-wp-book-admin.php:153
 msgid "Book Category"
-msgstr ""
+msgstr "Buchkategorie"
 
 #: admin/class-wp-book-admin.php:171
 msgid "Book Tags"
-msgstr ""
+msgstr "Buch-Tags"
 
 #: admin/class-wp-book-admin.php:172
 msgid "Book Tag"
-msgstr ""
+msgstr "Buch-Tag"
 
 #: admin/class-wp-book-admin.php:189
 msgid "Book Meta"
-msgstr ""
+msgstr "Buch Meta"
 
 #: admin/class-wp-book-admin.php:204
 msgid "Author"
-msgstr ""
+msgstr "Autorin"
 
 #: admin/class-wp-book-admin.php:205
 msgid "Price"
-msgstr ""
+msgstr "Preis"
 
 #: admin/class-wp-book-admin.php:206
 msgid "Publisher"
-msgstr ""
+msgstr "Verlegerin"
 
 #: admin/class-wp-book-admin.php:207
 msgid "Year"
-msgstr ""
+msgstr "Jahr"
 
 #: admin/class-wp-book-admin.php:208
 msgid "Edition"
-msgstr ""
+msgstr "Auflage"
 
 #: admin/class-wp-book-admin.php:209
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: admin/class-wp-book-admin.php:282 admin/class-wp-book-admin.php:289
 #: admin/class-wp-book-admin.php:291 admin/class-wp-book-admin.php:293
 #: admin/class-wp-book-admin.php:303 admin/class-wp-book-admin.php:313
-#: includes/class-book-widget.php:75
 msgid "No Book Found"
-msgstr ""
+msgstr "Kein Buch gefunden"
 
 #: admin/class-wp-book-admin.php:330
 msgid "Top 5 Book Categories as per count"
-msgstr ""
-
-#: admin/class-wp-book-admin.php:376
-msgid "Book Settings"
-msgstr ""
-
-#: admin/class-wp-book-admin.php:404
-msgid "Book Settings Section"
-msgstr ""
-
-#: admin/class-wp-book-admin.php:405
-msgid "Number of books displayed per page"
-msgstr ""
-
-#: admin/class-wp-book-admin.php:406
-msgid "Changing Currency"
-msgstr ""
-
-#: admin/class-wp-book-admin.php:416
-msgid "Description of Books"
-msgstr ""
+msgstr "Top 5 Buchkategorien nach Anzahl"
 
 #: includes/class-book-widget.php:32
 msgid "Book Widget"
-msgstr ""
-
-#: includes/class-book-widget.php:47
-msgid "Books as per widgets"
-msgstr ""
+msgstr "Buch-Widget"

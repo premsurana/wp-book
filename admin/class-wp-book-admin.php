@@ -105,22 +105,22 @@ class Wp_Book_Admin {
 	 */
 	public function wp_book_book_post_type() {
 		$labels = array(
-			'name'               => _x( 'Books', 'post type general name' ),
-			'singular_name'      => _x( 'Book', 'post type singular name' ),
-			'add_new'            => _x( 'Add New', 'book' ),
-			'add_new_item'       => __( 'Add New Book' ),
-			'edit_item'          => __( 'Edit Book' ),
-			'new_item'           => __( 'New Book' ),
-			'all_items'          => __( 'All Book' ),
-			'view_item'          => __( 'View Book' ),
-			'search_items'       => __( 'Search Book' ),
-			'not_found'          => __( 'No books found' ),
-			'not_found_in_trash' => __( 'No books found in the Trash' ),
-			'menu_name'          => 'Books',
+			'name'               => __( 'Books', 'wp-book' ),
+			'singular_name'      => __( 'Book', 'wp-book' ),
+			'add_new'            => __( 'Add New', 'wp-book' ),
+			'add_new_item'       => __( 'Add New Book', 'wp-book' ),
+			'edit_item'          => __( 'Edit Book', 'wp-book' ),
+			'new_item'           => __( 'New Book', 'wp-book' ),
+			'all_items'          => __( 'All Book', 'wp-book' ),
+			'view_item'          => __( 'View Book', 'wp-book' ),
+			'search_items'       => __( 'Search Book', 'wp-book' ),
+			'not_found'          => __( 'No books found', 'wp-book' ),
+			'not_found_in_trash' => __( 'No books found in the Trash', 'wp-book' ),
+			'menu_name'          => __( 'Books', 'wp-book' ),
 		);
 		$args   = array(
 			'labels'        => $labels,
-			'description'   => 'Holds our books and book specific data',
+			'description'   => __( 'Holds our books and book specific data', 'wp-book' ),
 			'public'        => true,
 			'menu_position' => 5,
 			'supports'      => array( 'title', 'editor' ),
@@ -149,8 +149,8 @@ class Wp_Book_Admin {
 	 */
 	public function wp_book_book_category_taxonomy() {
 		$labels = array(
-			'name'          => 'Book Categories',
-			'singular_name' => 'Book Category',
+			'name'          => __( 'Book Categories', 'wp-book' ),
+			'singular_name' => __( 'Book Category', 'wp-book' ),
 		);
 
 		$args = array(
@@ -168,8 +168,8 @@ class Wp_Book_Admin {
 	 */
 	public function wp_book_book_tag_taxonomy() {
 		$labels = array(
-			'name'          => 'Book Tags',
-			'singular_name' => 'Book Tag',
+			'name'          => __( 'Book Tags', 'wp-book' ),
+			'singular_name' => __( 'Book Tag', 'wp-book' ),
 		);
 
 		$args = array(
@@ -186,7 +186,7 @@ class Wp_Book_Admin {
 	 * @since    1.0.0
 	 */
 	public function wp_book_book_meta_box() {
-		add_meta_box( 'book_meta_box', 'Book Meta', array( $this, 'book_meta_box_content' ), 'book' );
+		add_meta_box( 'book_meta_box', __( 'Book Meta', 'wp-book' ), array( $this, 'book_meta_box_content' ), 'book' );
 	}
 
 	/**
@@ -201,12 +201,12 @@ class Wp_Book_Admin {
 		?>
 
 		<div>
-			Author Name: <input type="text" name="AuthorName" value="<?php echo( isset( $array['AuthorName'] ) ? esc_attr( $array['AuthorName'] ) : '' ); ?>"><br><br>
-			Price: <input type="number" name="Price" value="<?php echo( isset( $array['Price'] ) ? esc_attr( $array['Price'] ) : '' ); ?>"><br><br>
-			Publisher: <input type="text" name="Publisher" value="<?php echo( isset( $array['Publisher'] ) ? esc_attr( $array['Publisher'] ) : '' ); ?>"><br><br>
-			Year: <input type="text" name="Year" value="<?php echo( isset( $array['Year'] ) ? esc_attr( $array['Year'] ) : '' ); ?>"><br><br>
-			Edition: <input type="text" name="Edition" value="<?php echo( isset( $array['Edition'] ) ? esc_attr( $array['Edition'] ) : '' ); ?>"><br><br>
-			URL: <input type="text" name="URL" value="<?php echo( isset( $array['URL'] ) ? esc_attr( $array['URL'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'Author', 'wp-book' ); ?>: <input type="text" name="AuthorName" value="<?php echo( isset( $array['AuthorName'] ) ? esc_attr( $array['AuthorName'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'Price', 'wp-book' ); ?>: <input type="number" name="Price" value="<?php echo( isset( $array['Price'] ) ? esc_attr( $array['Price'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'Publisher', 'wp-book' ); ?>: <input type="text" name="Publisher" value="<?php echo( isset( $array['Publisher'] ) ? esc_attr( $array['Publisher'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'Year', 'wp-book' ); ?>: <input type="text" name="Year" value="<?php echo( isset( $array['Year'] ) ? esc_attr( $array['Year'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'Edition', 'wp-book' ); ?>: <input type="text" name="Edition" value="<?php echo( isset( $array['Edition'] ) ? esc_attr( $array['Edition'] ) : '' ); ?>"><br><br>
+		<?php esc_html_e( 'URL', 'wp-book' ); ?>: <input type="text" name="URL" value="<?php echo( isset( $array['URL'] ) ? esc_attr( $array['URL'] ) : '' ); ?>"><br><br>
 		</div>
 		<?php
 	}
@@ -279,18 +279,18 @@ class Wp_Book_Admin {
 		);
 
 		if ( '0' === $atts['id'] ) {
-			return 'No Book Found';
+			return esc_html_e( 'No Book Found', 'wp-book' );
 		}
 
 		$array      = get_book_meta( $atts['id'], $atts['id'], true );
 		$atts['id'] = (int) $atts['id'];
 
 		if ( ( $atts['authorname'] !== $array['AuthorName'] ) && '' !== $atts['authorname'] ) {
-			return 'No Book Found';
+			return esc_html_e( 'No Book Found', 'wp-book' );
 		} elseif ( $atts['year'] !== $array['Year'] && '' !== $atts['year'] ) {
-			return 'No Book Found';
+			return esc_html_e( 'No Book Found', 'wp-book' );
 		} elseif ( $atts['publisher'] !== $array['Publisher'] && '' !== $atts['publisher'] ) {
-			return 'No Book Found';
+			return esc_html_e( 'No Book Found', 'wp-book' );
 		}
 
 		echo '<pre>';
@@ -300,7 +300,7 @@ class Wp_Book_Admin {
 		foreach ( $items as $tag ) {
 			echo '<br>';
 			if ( $atts['category'] !== $tag->name && '' !== $atts['category'] ) {
-				return 'No Book Found';
+				return esc_html_e( 'No Book Found', 'wp-book' );
 			}
 			array_push( $result, $tag->name );
 		}
@@ -310,7 +310,7 @@ class Wp_Book_Admin {
 		foreach ( $items as $tag ) {
 			echo '<br>';
 			if ( $atts['tag'] !== $tag->name && '' !== $atts['tag'] ) {
-				return 'No Book Found';
+				return esc_html_e( 'No Book Found', 'wp-book' );
 			}
 			array_push( $result, $tag->name );
 		}
@@ -327,7 +327,7 @@ class Wp_Book_Admin {
 	 * @since    1.0.0
 	 */
 	public function wp_book_dashboard_widgets() {
-		wp_add_dashboard_widget( 'book_dashboard_widget', 'Top 5 Book Categories as per count', array( $this, 'wp_book_dashboard_widgets_render' ) );
+		wp_add_dashboard_widget( 'book_dashboard_widget', __( 'Top 5 Book Categories as per count', 'wp-book' ), array( $this, 'wp_book_dashboard_widgets_render' ) );
 	}
 
 	/**
@@ -373,7 +373,7 @@ class Wp_Book_Admin {
 	 * @since    1.0.0
 	 */
 	public function wp_book_admin_menu() {
-		add_options_page( 'Book Settings', 'Book Settings', 'manage_options', 'book-settings', array( $this, 'wp_book_settings_render' ) );
+		add_options_page( __( 'Book Settings', 'wp-book' ), __( 'Book Settings', 'wp-book' ), 'manage_options', 'book-settings', array( $this, 'wp_book_settings_render' ) );
 	}
 
 	/**
@@ -401,9 +401,9 @@ class Wp_Book_Admin {
 	 */
 	public function wp_book_settings_init() {
 		register_setting( 'bookSettings', 'book_settings' );
-		add_settings_section( 'book_settings_section', 'Book Settings Section', array( $this, 'book_settings_section_render' ), 'bookSettings' );
-		add_settings_field( 'book_settings_field_zero', 'Number of books displayed per page', array( $this, 'book_settings_field_zero_render' ), 'bookSettings', 'book_settings_section' );
-		add_settings_field( 'book_settings_field_one', 'Changing Currency', array( $this, 'book_settings_field_one_render' ), 'bookSettings', 'book_settings_section' );
+		add_settings_section( 'book_settings_section', __( 'Book Settings Section', 'wp-book' ), array( $this, 'book_settings_section_render' ), 'bookSettings' );
+		add_settings_field( 'book_settings_field_zero', __( 'Number of books displayed per page', 'wp-book' ), array( $this, 'book_settings_field_zero_render' ), 'bookSettings', 'book_settings_section' );
+		add_settings_field( 'book_settings_field_one', __( 'Changing Currency', 'wp-book' ), array( $this, 'book_settings_field_one_render' ), 'bookSettings', 'book_settings_section' );
 	}
 
 	/**
@@ -412,7 +412,9 @@ class Wp_Book_Admin {
 	 * @since    1.0.0
 	 */
 	public function book_settings_section_render() {
-		echo '<p>Description of settings</p>';
+		echo '<p>';
+		esc_html_e( 'Description of Books', 'wp-book' );
+		echo '</p>';
 	}
 
 	/**
@@ -441,4 +443,54 @@ class Wp_Book_Admin {
 		</select>
 		<?php
 	}
+}
+
+/**
+ * Add book meta function
+ *
+ * @since    1.0.0
+ * @param      string $book_id       Book id as post id.
+ * @param      string $meta_key    Meta key to pass for meta key table.
+ * @param      string $meta_value  Meta value to pass for meta value table.
+ * @param      string $unique    Unique can be either true or false.
+ */
+function add_book_meta( $book_id, $meta_key, $meta_value, $unique = false ) {
+	return add_metadata( 'book', $book_id, $meta_key, $meta_value, $unique );
+}
+
+/**
+ * Delete Book function
+ *
+ * @since    1.0.0
+ * @param      string $book_id       Book id as post id.
+ * @param      string $meta_key    Meta key to pass for meta key table.
+ * @param      string $meta_value  Meta value to pass for meta value table.
+ */
+function delete_book_meta( $book_id, $meta_key, $meta_value = '' ) {
+	return delete_metadata( 'book', $book_id, $meta_key, $meta_value );
+}
+
+/**
+ * Delete Book function
+ *
+ * @since    1.0.0
+ * @param      string $book_id       Book id as post id.
+ * @param      string $key    Meta key to pass for book meta table.
+ * @param      string $single  Meta value to pass for book meta table.
+ */
+function get_book_meta( $book_id, $key = '', $single = false ) {
+	return get_metadata( 'book', $book_id, $key, $single );
+}
+
+/**
+ * Add book meta function
+ *
+ * @since    1.0.0
+ * @param      string $book_id       Book id as post id.
+ * @param      string $meta_key    Meta key to pass for meta key table.
+ * @param      string $meta_value  Meta value to pass for meta value table.
+ * @param      string $prev_value    Previous value to be added.
+ */
+function update_book_meta( $book_id, $meta_key, $meta_value, $prev_value = '' ) {
+	return update_metadata( 'book', $book_id, $meta_key, $meta_value, $prev_value );
 }

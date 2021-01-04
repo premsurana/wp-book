@@ -29,7 +29,7 @@ class Book_Widget extends WP_Widget {
 	public function __construct() {
 		$widget_options = array(
 			'classname'                   => 'book_widget',
-			'description'                 => __( 'Book Widget' ),
+			'description'                 => __( 'Book Widget', 'wp-book' ),
 			'customize_selective_refresh' => true,
 		);
 		parent::__construct( 'book_widget', 'Book Widget', $widget_options );
@@ -43,9 +43,10 @@ class Book_Widget extends WP_Widget {
 	 * @param    mixed $instance Instance Object.
 	 */
 	public function widget( $args, $instance ) {
-		?>
-			<h4>Books as per widgets</h4><br>
-		<?php
+		echo '<h4>';
+		esc_html_e( 'Books as per widgets', 'wp-book' );
+		echo '</h4>';
+
 		if ( ! isset( $instance['title'] ) ) {
 			return;
 		}
@@ -71,7 +72,7 @@ class Book_Widget extends WP_Widget {
 		}
 
 		if ( false === $flag ) {
-			echo 'no book found';
+			esc_html_e( 'No Book Found', 'wp-book' );
 		}
 	}
 

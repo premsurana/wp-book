@@ -9,3 +9,70 @@ foreach ( $array as $item ) {
 		echo '<br>';
 		echo "<input type='text' name='" . esc_html( $this->get_field_name( 'title' ) ) . "' id='" . esc_html( $this->get_field_name( 'id' ) ) . "'>";
 		echo '<br>';
+		$atts = shortcode_atts(
+			array(
+				'id'         => '0',
+				'authorname' => '',
+				'category'   => '',
+				'publisher'  => '',
+				'year'       => '',
+				'tag'        => '',
+			),
+			$atts
+		);
+
+
+
+
+
+if ( empty( $atts ) ) {
+
+			$the_query = new WP_Query(
+				array(
+					'post_type' => 'book',
+				)
+			);
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['id'] ) && empty( $atts['category'] ) && empty( $atts['tag'] ) ) {
+			$the_query = new WP_Query(
+				array(
+					'post_type' => 'book',
+					'p'         => $atts['id'],
+				)
+			);
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['category'] ) && empty( $atts['id'] ) && empty( $atts['tag'] ) ) {
+
+			$the_query = new WP_Query(
+				array(
+					'post_type' => 'book',
+					'tax_query' => array(
+						array(
+							'taxonomy' => 'Book Category',
+							'field'    => 'slug',
+							'terms'    => $atts['category'],
+						),
+					),
+				)
+			);
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['tag'] ) && empty( $atts['id'] ) && empty( $atts['category'] ) ) {
+
+			$the_query = new WP_Query(
+				array(
+					'post_type' => 'book',
+					'tax_query' => array(
+						array(
+							'taxonomy' => 'Book Category',
+							'field'    => 'slug',
+							'terms'    => $atts['tag'],
+						),
+					),
+				)
+			);
+			$this->display( $the_query );
+			return;
+		}

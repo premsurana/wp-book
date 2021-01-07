@@ -86,7 +86,7 @@ class Book_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$array = get_terms();
-
+		echo '<h2>Book Category: </h2>';
 		echo "<select name='" . esc_html( $this->get_field_name( 'selectedCat' ) ) . "' id='" . esc_html( $this->get_field_id( 'selectedCat' ) ) . "'>";
 		foreach ( $array as $item ) {
 			if ( 'Book Category' === $item->taxonomy ) {
@@ -94,6 +94,7 @@ class Book_Widget extends WP_Widget {
 			}
 		}
 		echo '</select>';
+		echo '<br><br>';
 	}
 
 	/**

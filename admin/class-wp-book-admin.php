@@ -267,61 +267,83 @@ class Wp_Book_Admin {
 	 * @param    mixed $atts Attributes_shortcode.
 	 */
 	public function wp_book_shortcode( $atts ) {
-		$atts = shortcode_atts(
-			array(
-				'id'         => '0',
-				'authorname' => '',
-				'category'   => '',
-				'publisher'  => '',
-				'year'       => '',
-				'tag'        => '',
-			),
-			$atts
+		$args = array(
+			'post_type' => 'book',
 		);
-
-		if ( '0' === $atts['id'] ) {
-			return esc_html_e( 'No Book Found', 'wp-book' );
+		if ( empty( $atts ) ) {
+			$the_query = new WP_Query( $args );
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['id'] ) ) {
+			$args['p'] = $atts['id'];
+			$the_query = new WP_Query( $args );
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['category'] ) && ! empty( $atts['tag'] ) ) {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'Book Category',
+					'field'    => 'slug',
+					'terms'    => $atts['category'],
+				),
+				array(
+					'taxonomy' => 'Book Tag',
+					'field'    => 'slug',
+					'terms'    => $atts['tag'],
+				),
+			);
+			$the_query         = new WP_Query( $args );
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['category'] ) && empty( $atts['tag'] ) ) {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'Book Category',
+					'field'    => 'slug',
+					'terms'    => $atts['category'],
+				),
+			);
+			$the_query         = new WP_Query( $args );
+			$this->display( $the_query );
+			return;
+		} elseif ( ! empty( $atts['tag'] ) && empty( $atts['category'] ) ) {
+			$args['tax_query'] = array(
+				array(
+					'taxonomy' => 'Book Tag',
+					'field'    => 'slug',
+					'terms'    => $atts['tag'],
+				),
+			);
+			$the_query         = new WP_Query( $args );
+			$this->display( $the_query );
+			return;
 		}
-
-		$array      = get_book_meta( $atts['id'], $atts['id'], true );
-		$atts['id'] = (int) $atts['id'];
-
-		if ( ( $atts['authorname'] !== $array['AuthorName'] ) && '' !== $atts['authorname'] ) {
-			return esc_html_e( 'No Book Found', 'wp-book' );
-		} elseif ( $atts['year'] !== $array['Year'] && '' !== $atts['year'] ) {
-			return esc_html_e( 'No Book Found', 'wp-book' );
-		} elseif ( $atts['publisher'] !== $array['Publisher'] && '' !== $atts['publisher'] ) {
-			return esc_html_e( 'No Book Found', 'wp-book' );
-		}
-
-		echo '<pre>';
-
-			$result = array();
-			$items  = get_the_terms( $atts['id'], 'Book Category' );
-		foreach ( $items as $tag ) {
-			echo '<br>';
-			if ( $atts['category'] !== $tag->name && '' !== $atts['category'] ) {
-				return esc_html_e( 'No Book Found', 'wp-book' );
-			}
-			array_push( $result, $tag->name );
-		}
-			echo '<br>';
-
-			$items = get_the_terms( $atts['id'], 'Book Tag' );
-		foreach ( $items as $tag ) {
-			echo '<br>';
-			if ( $atts['tag'] !== $tag->name && '' !== $atts['tag'] ) {
-				return esc_html_e( 'No Book Found', 'wp-book' );
-			}
-			array_push( $result, $tag->name );
-		}
-			echo esc_attr( print_r( $array ) );
-		foreach ( $result as $item ) {
-			echo esc_attr( $item ) . '<br>';
-		}
-		echo '</pre>';
 	}
 
+	/**
+	 * Book ShortCode Function
+	 *
+	 * @since    1.0.0
+	 * @param    mixed $the_query display function.
+	 */
+	public function display( $the_query ) {
+		if ( $the_query->have_posts() ) {
+			while ( $the_query->have_posts() ) {
+				$the_query->the_post();
+				$id    = get_the_ID();
+				$title = get_the_title();
+				$array = get_book_meta( $id, $id, true );
+				echo '<h4>' . $title . '</h4>';
+				echo '<p>Author Name: ' . $array['AuthorName'] . '</p>';
+				echo '<p>Publisher: ' . $array['Publisher'] . '</p>';
+				echo '<p>Price: ' . $array['Price'] . '</p>';
+				echo '<p>Year: ' . $array['Year'] . '</p>';
+				echo '<br>';
+			}
+		} else {
+			echo 'No book found';
+		}
+	}
 	/**
 	 * Book Dashboard Widget Render Function
 	 *

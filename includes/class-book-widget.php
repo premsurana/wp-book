@@ -43,11 +43,12 @@ class Book_Widget extends WP_Widget {
 	 * @param    mixed $instance Instance Object.
 	 */
 	public function widget( $args, $instance ) {
+
 		echo '<h4>';
 		esc_html_e( 'Books as per widgets', 'wp-book' );
 		echo '</h4>';
 
-		if ( ! isset( $instance['title'] ) ) {
+		if ( ! isset( $instance['selectedCat'] ) ) {
 			return;
 		}
 
@@ -58,7 +59,7 @@ class Book_Widget extends WP_Widget {
 					array(
 						'taxonomy' => 'Book Category',
 						'field'    => 'slug',
-						'terms'    => $instance['title'],
+						'terms'    => $instance['selectedCat'],
 					),
 				),
 			)
@@ -74,6 +75,7 @@ class Book_Widget extends WP_Widget {
 		if ( false === $flag ) {
 			esc_html_e( 'No Book Found', 'wp-book' );
 		}
+
 	}
 
 	/**
@@ -83,10 +85,15 @@ class Book_Widget extends WP_Widget {
 	 * @param    mixed $instance New Instance Object.
 	 */
 	public function form( $instance ) {
+		$array = get_terms();
 
-		echo '<br>';
-		echo "<input type='text' name='" . esc_html( $this->get_field_name( 'title' ) ) . "' id='" . esc_html( $this->get_field_name( 'id' ) ) . "'>";
-		echo '<br>';
+		echo "<select name='" . esc_html( $this->get_field_name( 'selectedCat' ) ) . "' id='" . esc_html( $this->get_field_id( 'selectedCat' ) ) . "'>";
+		foreach ( $array as $item ) {
+			if ( 'Book Category' === $item->taxonomy ) {
+				echo '<option ' . selected( $instance['selectedCat'], $item->name ) . " value='" . esc_html( $item->name ) . "'>" . esc_html( $item->name ) . '</option>';
+			}
+		}
+		echo '</select>';
 	}
 
 	/**
@@ -100,7 +107,7 @@ class Book_Widget extends WP_Widget {
 
 		$instance = array();
 
-		$instance['title'] = ! empty( $new_instance['title'] ) ? $new_instance['title'] : '';
+		$instance['selectedCat'] = ! empty( $new_instance['selectedCat'] ) ? $new_instance['selectedCat'] : '';
 		return $instance;
 	}
 }

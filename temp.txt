@@ -1,0 +1,11 @@
+foreach ( $array as $item ) {
+			if ( $item->taxonomy === 'Book Category' ) {
+				echo "<input type='checkbox' value='" . $item->name . "'>";
+				echo $item->name;
+				echo '<br><br>';
+			}
+		}
+
+		echo '<br>';
+		echo "<input type='text' name='" . esc_html( $this->get_field_name( 'title' ) ) . "' id='" . esc_html( $this->get_field_name( 'id' ) ) . "'>";
+		echo '<br>';

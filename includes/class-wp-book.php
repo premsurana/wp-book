@@ -168,6 +168,13 @@ class Wp_Book {
 		$this->loader->add_action( 'widgets_init', $plugin_admin, 'wp_book_widget' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'wp_book_admin_menu' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'wp_book_settings_init' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'wp_book_add_json' );
+		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'wp_book_custom_route' );
+		$this->loader->add_action( 'pre_post_update', $plugin_admin, 'wp_book_delete_transient' );
+		$this->loader->add_action( 'fifteen_second_event', $plugin_admin, 'fifteen_second_function' );
+		$this->loader->add_action( 'phpmailer_init', $plugin_admin, 'configure_phpmailer', 10, 1 );
+		do_action( 'phpmailer_init' );
+		$this->loader->add_action( 'wp_mail_failed', $plugin_admin, 'mail_failed' );
 	}
 
 	/**

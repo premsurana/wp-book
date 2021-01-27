@@ -62,6 +62,18 @@ register_deactivation_hook( __FILE__, 'deactivate_wp_book' );
  * admin-specific hooks, and public-facing site hooks.
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-wp-book.php';
+add_filter( 'cron_schedules', 'example_add_cron_interval' );
+function example_add_cron_interval( $schedules ) {
+	$schedules['fifteen_seconds'] = array(
+		'interval' => 60,
+		'display'  => esc_html__( 'Every Fifteen Seconds' ),
+	);
+	return $schedules;
+}
+
+if ( ! wp_next_scheduled( 'fifteen_second_event' ) ) {
+	wp_schedule_event( time(), 'fifteen_seconds', 'fifteen_second_event' );
+}
 
 /**
  * Begins execution of the plugin.
@@ -79,3 +91,4 @@ function run_wp_book() {
 
 }
 run_wp_book();
+

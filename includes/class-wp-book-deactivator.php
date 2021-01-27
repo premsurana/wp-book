@@ -29,6 +29,17 @@ class Wp_Book_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
+
+		require_once ABSPATH . 'wp-content/class-wp-logger.php';
+		$abc = wp_mail( 'something@gmail.com', 'Plugin Deactivated', 'Some message' );
+		if ( $abc ) {
+			WP_Logger::logger( 'true' );
+		} else {
+			WP_Logger::logger( 'false' );
+			global $phpmailer;
+			WP_Logger::logger( $phpmailer );
+		}
+
 		flush_rewrite_rules();
 	}
 

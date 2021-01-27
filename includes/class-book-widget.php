@@ -68,7 +68,7 @@ class Book_Widget extends WP_Widget {
 		while ( $the_query->have_posts() ) {
 			$flag = true;
 			$the_query->the_post();
-			echo esc_html( get_the_title() );
+			echo "<a href='" . esc_attr( get_post_permalink( get_the_ID() ) ) . "'>" . esc_html( get_the_title() ) . '</a>';
 			echo '<br>';
 		}
 

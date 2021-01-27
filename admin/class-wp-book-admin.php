@@ -126,6 +126,7 @@ class Wp_Book_Admin {
 			'menu_position' => 5,
 			'supports'      => array( 'title', 'editor' ),
 			'has_archive'   => true,
+			'show_in_rest'  => true,
 		);
 		register_post_type( 'book', $args );
 	}
@@ -157,6 +158,8 @@ class Wp_Book_Admin {
 		$args = array(
 			'labels'       => $labels,
 			'hierarchical' => true,
+			'show_in_rest' => true,
+			'rest_base'    => 'book-categories',
 		);
 
 		register_taxonomy( 'Book Category', array( 'book' ), $args );
@@ -176,6 +179,8 @@ class Wp_Book_Admin {
 		$args = array(
 			'labels'       => $labels,
 			'hierarchical' => false,
+			'show_in_rest' => true,
+			'rest_base'    => 'book-tags',
 		);
 
 		register_taxonomy( 'Book Tag', array( 'book' ), $args );
@@ -188,6 +193,106 @@ class Wp_Book_Admin {
 	 */
 	public function wp_book_book_meta_box() {
 		add_meta_box( 'book_meta_box', __( 'Book Meta', 'wp-book' ), array( $this, 'book_meta_box_content' ), 'book' );
+	}
+
+	/**
+	 * Adds Custom Book Meta Box Data to Rest.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_add_json() {
+		register_rest_field(
+			'book',
+			'book_meta_data',
+			array(
+				'get_callback'    => 'get_book_meta_rest',
+				'update_callback' => null,
+				'schema'          => null,
+			)
+		);
+	}
+
+	/**
+	 * Registers a custom route of books
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_custom_route() {
+		register_rest_route(
+			'custom',
+			'/books',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_custom_books' ),
+				'permission_callback' => function() {
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+	}
+
+	/**
+	 * Adding data to custom route.
+	 *
+	 * @since    1.0.0
+	 */
+	public function get_custom_books() {
+		$return_array = get_transient( 'book_custom_query_results' );
+		if ( false === $return_array ) {
+			$args         = array(
+				'post_type' => 'book',
+			);
+			$the_query    = new WP_Query( $args );
+			$return_array = array();
+			if ( $the_query->have_posts() ) {
+				while ( $the_query->have_posts() ) {
+					$the_query->the_post();
+					$id         = get_the_ID();
+					$categories = array();
+					$tags       = array();
+					$terms      = get_the_terms( $id, 'Book Category' );
+					if ( ! empty( $terms ) ) {
+						foreach ( $terms as $term ) {
+							array_push( $categories, $term->name );
+						}
+					}
+					$terms = get_the_terms( $id, 'Book Tag' );
+					if ( ! empty( $terms ) ) {
+						foreach ( $terms as $term ) {
+							array_push( $tags, $term->name );
+						}
+					}
+					$array = array(
+						'ID'         => $id,
+						'title'      => get_the_title(),
+						'MetaData'   => get_book_meta( $id, $id, true ),
+						'Categories' => $categories,
+						'Tags'       => $tags,
+					);
+					array_push( $return_array, $array );
+				}
+				set_transient( 'book_custom_query_results', $return_array, HOUR_IN_SECONDS );
+
+			} else {
+				return 'Nothing';
+			}
+		}
+
+		return $return_array;
+	}
+
+	/**
+	 * Delete transient on book update.
+	 *
+	 * @since    1.0.0
+	 */
+	public function wp_book_delete_transient() {
+		global $post_type;
+
+		if ( 'book' !== $post_type ) {
+			return;
+		}
+		delete_transient( 'book_custom_query_results' );
 	}
 
 	/**
@@ -333,11 +438,11 @@ class Wp_Book_Admin {
 				$id    = get_the_ID();
 				$title = get_the_title();
 				$array = get_book_meta( $id, $id, true );
-				echo '<h4>' . $title . '</h4>';
-				echo '<p>Author Name: ' . $array['AuthorName'] . '</p>';
-				echo '<p>Publisher: ' . $array['Publisher'] . '</p>';
-				echo '<p>Price: ' . $array['Price'] . '</p>';
-				echo '<p>Year: ' . $array['Year'] . '</p>';
+				echo '<h4>' . esc_html( $title ) . '</h4>';
+				echo '<p>Author Name: ' . esc_html( $array['AuthorName'] ) . '</p>';
+				echo '<p>Publisher: ' . esc_html( $array['Publisher'] ) . '</p>';
+				echo '<p>Price: ' . esc_html( $array['Price'] ) . '</p>';
+				echo '<p>Year: ' . esc_html( $array['Year'] ) . '</p>';
 				echo '<br>';
 			}
 		} else {
@@ -466,6 +571,41 @@ class Wp_Book_Admin {
 		</select>
 		<?php
 	}
+
+	/**
+	 * Cron after fifteen second
+	 *
+	 * @since    1.0.0
+	 */
+	public function fifteen_second_function() {
+		require_once ABSPATH . 'wp-content/class-wp-logger.php';
+		WP_Logger::logger( 'hello world' );
+	}
+
+	/**
+	 * Phpmailer for smtp
+	 *
+	 * @since    1.0.0
+	 * @param   mixed $phpmailer    something.
+	 */
+	public function configure_phpmailer( $phpmailer ) {
+		$phpmailer->isSMTP();
+		$phpmailer->Host       = SMTP_HOST;
+		$phpmailer->SMTPAuth   = SMTP_AUTH;
+		$phpmailer->Port       = SMTP_PORT;
+		$phpmailer->Username   = SMTP_USER;
+		$phpmailer->Password   = SMTP_PASS;
+		$phpmailer->SMTPSecure = SMTP_SECURE;
+		$phpmailer->From       = SMTP_FROM;
+		$phpmailer->FromName   = SMTP_NAME;
+		require_once ABSPATH . 'wp-content/class-wp-logger.php';
+		WP_Logger::logger( 'hi world' );
+	}
+
+	public function mail_failed( $error ) {
+		require_once ABSPATH . 'wp-content/class-wp-logger.php';
+		WP_Logger::logger( $error );
+	}
 }
 
 /**
@@ -501,8 +641,19 @@ function delete_book_meta( $book_id, $meta_key, $meta_value = '' ) {
  * @param      string $key    Meta key to pass for book meta table.
  * @param      string $single  Meta value to pass for book meta table.
  */
-function get_book_meta( $book_id, $key = '', $single = false ) {
+function get_book_meta( $book_id, $key = '', $single = true ) {
 	return get_metadata( 'book', $book_id, $key, $single );
+}
+
+/**
+ * Get book meta in rest api
+ *
+ * @since    1.0.0
+ * @param    object $object Object returned by register_rest_field.
+ */
+function get_book_meta_rest( $object ) {
+	$post_id = $object['id'];
+	return get_book_meta( $post_id, $post_id, true );
 }
 
 /**

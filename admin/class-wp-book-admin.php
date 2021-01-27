@@ -152,7 +152,7 @@ class Wp_Book_Admin {
 	public function wp_book_book_category_taxonomy() {
 		$labels = array(
 			'name'          => __( 'Book Categories', 'wp-book' ),
-			'singular_name' => __( 'Book Category', 'wp-book' ),
+			'singular_name' => __( 'Book Category', 'wp-book' ), 
 		);
 
 		$args = array(
